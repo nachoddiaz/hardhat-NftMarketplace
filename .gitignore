@@ -1,2 +1,6 @@
 .env 
 node_modules
+.prettierrc
+.solhintignore
+gas-report.txt
+yarn-error.log
