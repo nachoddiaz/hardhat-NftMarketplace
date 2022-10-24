@@ -95,8 +95,6 @@ contract NftMarketplace is ReentrancyGuard {
         _;
     }
 
-   
-
     /*
      * @notice: Method for listing NFTs intro the marketplace (MP)
      * @param nftAddress: Address of the NFT contract
