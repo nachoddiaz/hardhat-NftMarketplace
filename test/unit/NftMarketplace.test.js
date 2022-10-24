@@ -97,7 +97,7 @@ const { devChains } = require("../../helper-hardhat-config")
                       `NftMarketplace__NotListed("${basicNft.address}", ${TOKEN_ID})`
                   )
               })
- 
+
               it("transfer the NFT to the buyer, emits ItemBougt event and update internal proceed record", async function () {
                   await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
                   nftmarketplace = NftMarketplace.connect(player)
@@ -134,20 +134,32 @@ const { devChains } = require("../../helper-hardhat-config")
                   await expect(
                       nftmarketplace.cancelListing(basicNft.address, TOKEN_ID)
                   ).to.be.revertedWith(`NftMarketplace__NotOwner()`)
-                  
               })
           })
 
           describe("updateListing", function () {
-              it("Cant buy if the price is not met", async function () {
-                  await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
+              it("Cant update if the NFT is not listed", async function () {
                   await expect(
-                      NftMarketplace.buyItem(basicNft.address, TOKEN_ID, {
-                          value: ethers.utils.parseEther("0.01"),
-                      })
+                      NftMarketplace.updateListing(
+                          basicNft.address,
+                          TOKEN_ID,
+                          ethers.utils.parseEther("0.02")
+                      )
                   ).to.be.revertedWith(
-                      `NftMarketplace__PriceNotMet("${basicNft.address}", ${TOKEN_ID}, ${PRICE})`
+                      `NftMarketplace__NotListed("${basicNft.address}", ${TOKEN_ID})`
                   )
+              })
+              it("Only the Owner of the NFT can update it price", async function () {
+                  await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
+                  nftmarketplace = await NftMarketplace.connect(player)
+                  await basicNft.approve(player.address, TOKEN_ID)
+                  await expect(
+                      nftmarketplace.updateListing(
+                          basicNft.address,
+                          TOKEN_ID,
+                          ethers.utils.parseEther("0.02")
+                      )
+                  ).to.be.revertedWith(`NftMarketplace__NotOwner()`)
               })
           })
 
