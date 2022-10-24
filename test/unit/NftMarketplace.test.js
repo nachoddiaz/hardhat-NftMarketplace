@@ -135,6 +135,16 @@ const { devChains } = require("../../helper-hardhat-config")
                       nftmarketplace.cancelListing(basicNft.address, TOKEN_ID)
                   ).to.be.revertedWith(`NftMarketplace__NotOwner()`)
               })
+
+              it("Emits the correct event and cancel the listing", async function () {
+                  await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
+                  await expect(NftMarketplace.cancelListing(basicNft.address, TOKEN_ID)).to.emit(
+                      NftMarketplace,
+                      "ItemCanceled"
+                  )
+                  const listing = await NftMarketplace.getListings(basicNft.address, TOKEN_ID)
+                  assert(listing.price.toString() == "0")
+              })
           })
 
           describe("updateListing", function () {
@@ -161,18 +171,24 @@ const { devChains } = require("../../helper-hardhat-config")
                       )
                   ).to.be.revertedWith(`NftMarketplace__NotOwner()`)
               })
+
+              it("Fires the correct event and update the product", async function () {
+                  await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
+                  await expect(
+                      NftMarketplace.updateListing(
+                          basicNft.address,
+                          TOKEN_ID,
+                          ethers.utils.parseEther("0.02")
+                      )
+                  ).to.emit(NftMarketplace, "ItemListed")
+                  const listing = await NftMarketplace.getListings(basicNft.address, TOKEN_ID)
+                  assert(listing.price.toString() == ethers.utils.parseEther("0.02"))
+              })
           })
 
           describe("withdrawPayment", function () {
-              it("Cant buy if the price is not met", async function () {
-                  await NftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
-                  await expect(
-                      NftMarketplace.buyItem(basicNft.address, TOKEN_ID, {
-                          value: ethers.utils.parseEther("0.01"),
-                      })
-                  ).to.be.revertedWith(
-                      `NftMarketplace__PriceNotMet("${basicNft.address}", ${TOKEN_ID}, ${PRICE})`
-                  )
+              it("Can withdraw the payment if the proceeds are greater then zero", async function () {
+                  
               })
           })
       })
