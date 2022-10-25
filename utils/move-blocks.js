@@ -1,7 +1,7 @@
 const { network } = require("hardhat")
 
 function sleep(timeMs) {
-    return new Primise((resolve) => setTimeout(resolve, timeMs))
+    return new Promise((resolve) => setTimeout(resolve, timeMs))
 }
 
 //This function mines the number of blocks indicated in amount
