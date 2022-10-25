@@ -1,7 +1,8 @@
 const { ethers } = require("hardhat")
 const { moveBlocks } = require("../utils/move-blocks")
 
-TOKEN_ID = 2
+//token id must be greaet than zero
+TOKEN_ID = 1
 
 async function buy() {
     const NftMarketplace = await ethers.getContract("NftMarketplace")
