@@ -8,10 +8,8 @@ async function mint() {
     console.log("Minting...")
     const mintTx = await BasicNFT.mintNft()
     const mintTxReceipt = await mintTx.wait(1)
-    /* const tokenId = mintTxReceipt.events[0].args.tokenId
-    console.log(`Minted tokenId ${tokenId.toString()} from contract: ${BasicNFT.address}`) */
-
-    console.log("NFT Listed!!!")
+    const tokenId = mintTxReceipt.events[0].args.tokenId
+    console.log(`Minted tokenId ${tokenId.toString()} from contract: ${BasicNFT.address}`)
 
     if (network.config.chainId == 31337) {
         //mints two blocks waiting 1 sec between
